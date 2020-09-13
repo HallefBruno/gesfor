@@ -1,0 +1,17 @@
+#divLoading {
+    display : none;
+}
+#divLoading.show {
+    display : block;
+    position : fixed;
+    z-index: 100;
+    background-image : url('/gesfor/imagens/Ellipsis.gif');
+    background-color:#ffffff;
+    opacity : 0.8;
+    background-repeat : no-repeat;
+    background-position : center;
+    left : 0;
+    bottom : 0;
+    right : 0;
+    top : 0;
+}
