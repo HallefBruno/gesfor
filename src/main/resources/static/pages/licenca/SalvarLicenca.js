@@ -2,6 +2,10 @@ $(function () {
     
     validarComposDeEntrada();
     
+    $('.js-example').select2({
+        theme: 'bootstrap4'
+    });
+    
     $("#btnSalvarLicenca").click(function () {
 
         $("#msgError").html("");
