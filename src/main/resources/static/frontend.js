@@ -1,6 +1,5 @@
-$(document).ready(function () {
-    
-    
+$(function () {
+
     $('#linkBairro').click(function () {
         $("#pages").find("div").empty();
         $("#pages").find("div").load("pages/bairro/Bairro.html");
@@ -16,6 +15,8 @@ $(document).ready(function () {
     gifLoading();
     
     validarComposDeEntrada();
+    
+    getMessageErroAttribute();
     
 });
 
@@ -52,4 +53,13 @@ function validarComposDeEntrada() {
             
         }, false);
     });
+}
+
+function getMessageErroAttribute() {
+
+    $(document).ajaxError(function (event, jqxhr, settings) {
+        messageAtribbuteError = jqxhr.responseJSON;
+        //console.log(messageAtribbuteError);
+    });
+    
 }
