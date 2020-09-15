@@ -15,6 +15,8 @@ $(document).ready(function () {
     
     gifLoading();
     
+    validarComposDeEntrada();
+    
 });
 
 
@@ -30,5 +32,24 @@ function gifLoading() {
         if ((!settings.url.includes("term")) && (!settings.processResults)) {
             $("#divLoading").removeClass("show");
         }
+    });
+}
+
+function validarComposDeEntrada() {
+    var inputs = document.getElementsByClassName('validar');
+    Array.prototype.filter.call(inputs, function (input) {
+        
+        input.addEventListener('blur', function (event) {
+            
+            input.classList.remove('is-invalid');
+            input.classList.remove('is-valid');
+            
+            if (input.checkValidity() === false) {
+                input.classList.add('is-invalid');
+            } else {
+                input.classList.add('is-valid');
+            }
+            
+        }, false);
     });
 }
