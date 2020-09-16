@@ -2,8 +2,11 @@ package com.gesfor.centrlizadorexception;
 
 import com.gesfor.centrlizadorexception.negocioexception.licenca.LicencaIdMismatchException;
 import com.gesfor.centrlizadorexception.negocioexception.licenca.LicencaNotFoundException;
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.hibernate.NonUniqueObjectException;
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -28,9 +31,25 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, "Licenca não encontrada", new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
-    @ExceptionHandler({LicencaIdMismatchException.class, ConstraintViolationException.class, DataIntegrityViolationException.class})
-    public ResponseEntity<Object> handleBadRequest(Exception ex, WebRequest request) {
-        return handleExceptionInternal(ex, ex.getLocalizedMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<Object> handleConstraintBadRequest(Exception ex, WebRequest request) {
+        String msgDev = ex.getMessage();
+        String msgUser = "Já exite esse registro";
+        MessageErroDevUser devUser = new MessageErroDevUser(msgDev,msgUser);
+        return handleExceptionInternal(ex, devUser, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+    
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<Object> handleDataIntegrityBadRequest(Exception ex, WebRequest request) {
+        String messageUser="";
+        String messageDev="";
+        if(ex instanceof DataIntegrityViolationException) {
+            messageDev = ((DataIntegrityViolationException) ex).getMostSpecificCause().getMessage();
+            if(messageDev.contains(MESSAGE_ERROR_USER.CHAVE.value)) {
+                messageUser = RETORNO_MESSAGE_USER.CHAVE.value;
+            }
+        }
+        return handleExceptionInternal(ex, new MessageErroDevUser(messageDev, messageUser), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @Override
@@ -43,38 +62,49 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         });
         return handleExceptionInternal(ex, errors, new HttpHeaders(), status, request);
     }
+
+    private class MessageErroDevUser {
+        
+        private String messageDev;
+        private String messageUser;
+
+        public MessageErroDevUser(String messageDev, String messageUser) {
+            this.messageDev = messageDev;
+            this.messageUser = messageUser;
+        }
+   
+        public String getMessageDev() {
+            return messageDev;
+        }
+
+        public void setMessageDev(String messageDev) {
+            this.messageDev = messageDev;
+        }
+
+        public String getMessageUser() {
+            return messageUser;
+        }
+
+        public void setMessageUser(String messageUser) {
+            this.messageUser = messageUser;
+        }
+    }
     
-//        List<MessageErro> listaErros = new ArrayList<>();
-//        ex.getBindingResult().getAllErrors().forEach((error) -> {
-//            String fieldName = ((FieldError) error).getField();
-//            String errorMessage = error.getDefaultMessage();
-//            listaErros.add(new MessageErro(fieldName, errorMessage));
-//        });
+    public enum MESSAGE_ERROR_USER {
+        
+        CHAVE("duplicar valor da chave viola a restrição de unicidade");
+        private String value;
+        
+        private MESSAGE_ERROR_USER(String value) {
+            this.value = value;
+        }
+    }
     
-//    private class MessageErro {
-//        
-//        private String nomeAtributo;
-//        private String message;
-//
-//        public MessageErro(String nomeAtributo, String message) {
-//            this.nomeAtributo = nomeAtributo;
-//            this.message = message;
-//        }
-//
-//        public String getNomeAtributo() {
-//            return nomeAtributo;
-//        }
-//
-//        public void setNomeAtributo(String nomeAtributo) {
-//            this.nomeAtributo = nomeAtributo;
-//        }
-//
-//        public String getMessage() {
-//            return message;
-//        }
-//
-//        public void setMessage(String message) {
-//            this.message = message;
-//        }
-//    }
+    public enum RETORNO_MESSAGE_USER {
+        CHAVE("Esse registro já exite!");
+        private String value;
+        private RETORNO_MESSAGE_USER(String value) {
+            this.value = value;
+        }
+    }
 }
