@@ -1,6 +1,9 @@
+/* global Swal */
+
 $(function () {
     
     validarComposDeEntrada();
+    mask();
     
     $('.js-example').select2({
         theme: 'bootstrap4'
@@ -8,9 +11,10 @@ $(function () {
     
     $("#btnSalvarLicenca").click(function () {
 
-        $("#msgError").html("");
-
-        var licenca = {'cnpj': $("#cnpj").val(), 'dataCadastro': new Date(), 'email': $("#email").val(), 'status': true, 'telefone': $("#telefone").val()};
+        let telefone = removerMascaraTel($("#telefone").val());
+        let cnpj = removerMascaraCnpj($("#cnpj").val());
+        
+        const licenca = {'cnpj': cnpj, 'dataCadastro': new Date(), 'email': $("#email").val(), 'status': true, 'telefone': telefone};
 
         $.ajax({
 
@@ -21,12 +25,11 @@ $(function () {
             dataType: "json",
 
             success: function (data, textStatus, jqXHR) {
-                //alert("Registro salvo com sucesso");
-                swal("Here's a message!");
+                messageDefault('Registro salvo com sucesso!','success');
             },
 
             error: function (xhr, status, error) {
-                //console.log(validarComposDeEntrada);
+                
             }
 
         });
@@ -35,6 +38,22 @@ $(function () {
 
 
 });
+
+function mask() {
+    
+    $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
+    
+    var phoneMask = function (val) {
+        return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+    },
+    phoneOptions = {
+        onKeyPress: function(val, e, field, options) {
+            field.mask(phoneMask.apply({}, arguments), options);
+        }
+    };
+
+    $('#telefone').mask(phoneMask, phoneOptions);
+}
 
 function latLong() {
 

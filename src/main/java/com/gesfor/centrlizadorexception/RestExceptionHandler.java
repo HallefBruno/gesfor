@@ -1,13 +1,13 @@
 package com.gesfor.centrlizadorexception;
 
-import com.gesfor.centrlizadorexception.negocioexception.licenca.LicencaIdMismatchException;
 import com.gesfor.centrlizadorexception.negocioexception.licenca.LicencaNotFoundException;
-import java.sql.SQLException;
+import com.gesfor.model.Logs;
+import com.gesfor.service.LogsService;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.hibernate.NonUniqueObjectException;
-import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  */
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-
+    
+    @Autowired
+    private LogsService logsService;
+    
     @ExceptionHandler({LicencaNotFoundException.class})
     protected ResponseEntity<Object> handleNotFound(Exception ex, WebRequest request) {
         return handleExceptionInternal(ex, "Licenca não encontrada", new HttpHeaders(), HttpStatus.NOT_FOUND, request);
@@ -43,12 +46,28 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleDataIntegrityBadRequest(Exception ex, WebRequest request) {
         String messageUser="";
         String messageDev="";
+
         if(ex instanceof DataIntegrityViolationException) {
             messageDev = ((DataIntegrityViolationException) ex).getMostSpecificCause().getMessage();
             if(messageDev.contains(MESSAGE_ERROR_USER.CHAVE.value)) {
                 messageUser = RETORNO_MESSAGE_USER.CHAVE.value;
+            } else {
+                messageUser="Ocorreu um erro no sistema!\nEntre em contato com o adminstrador.";
             }
         }
+        
+        String origem="";
+        String metodo="";
+        
+        for (StackTraceElement ste : ex.getStackTrace()) {
+            if(ste.getClassName().contains("com.gesfor.controller")) {
+                origem = ste.getClassName();
+                metodo = ste.getMethodName();
+                break;
+            }
+        }
+        
+        logsService.salvar(new Logs(messageDev, new Date(), origem, metodo));
         return handleExceptionInternal(ex, new MessageErroDevUser(messageDev, messageUser), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
@@ -93,15 +112,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public enum MESSAGE_ERROR_USER {
         
         CHAVE("duplicar valor da chave viola a restrição de unicidade");
-        private String value;
         
+        private String value;
         private MESSAGE_ERROR_USER(String value) {
             this.value = value;
         }
     }
     
     public enum RETORNO_MESSAGE_USER {
+        
         CHAVE("Esse registro já exite!");
+        
         private String value;
         private RETORNO_MESSAGE_USER(String value) {
             this.value = value;
