@@ -30,7 +30,7 @@ public class Licenca implements Serializable {
     @NotNull(message = "Cnpj obrigatorio!")
     @NotBlank(message = "Cnpj obrigatorio!")
     @NotEmpty(message = "Cnpj obrigatorio!")
-    @Column(unique = true, length = 16, nullable = false)
+    @Column(unique = true, length = 15, nullable = false)
     private String cnpj;
     
     @Column(name = "data_cadastro", nullable = false)
@@ -49,7 +49,7 @@ public class Licenca implements Serializable {
     @NotNull(message = "telefone obrigatorio!")
     @NotBlank(message = "telefone obrigatorio!")
     @NotEmpty(message = "telefone obrigatorio!")
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10)
     private String telefone;
     
 }
