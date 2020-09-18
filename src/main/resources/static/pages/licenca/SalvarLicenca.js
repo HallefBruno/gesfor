@@ -11,10 +11,9 @@ $(function () {
     
     $("#btnSalvarLicenca").click(function () {
 
-        let telefone = removerMascaraTel($("#telefone").val());
-        let cnpj = removerMascaraCnpj($("#cnpj").val());
-        
-        const licenca = {'cnpj': cnpj, 'dataCadastro': new Date(), 'email': $("#email").val(), 'status': true, 'telefone': telefone};
+        let telefone = removerMaskara($("#telefone").val());
+        let cnpj = removerMaskara($("#cnpj").val());
+        let licenca = {'cnpj': cnpj, 'dataCadastro': new Date(), 'email': $("#email").val(), 'status': true, 'telefone': telefone};
 
         $.ajax({
 
@@ -25,7 +24,7 @@ $(function () {
             dataType: "json",
 
             success: function (data, textStatus, jqXHR) {
-                messageDefault('Registro salvo com sucesso!','success');
+                toastSimples('Registro salvo com sucesso!','success');
             },
 
             error: function (xhr, status, error) {

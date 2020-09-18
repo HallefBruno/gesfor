@@ -38,36 +38,32 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleConstraintBadRequest(Exception ex, WebRequest request) {
         String msgDev = ex.getMessage();
         String msgUser = "Já exite esse registro";
-        MessageErroDevUser devUser = new MessageErroDevUser(msgDev,msgUser);
-        return handleExceptionInternal(ex, devUser, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, new MessageErroDevUser(msgDev,msgUser), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
     
     @ExceptionHandler({DataIntegrityViolationException.class})
     public ResponseEntity<Object> handleDataIntegrityBadRequest(Exception ex, WebRequest request) {
         String messageUser="";
         String messageDev="";
-
-        if(ex instanceof DataIntegrityViolationException) {
+        String origem;
+        String metodo;
+        
+        if (ex instanceof DataIntegrityViolationException) {
             messageDev = ((DataIntegrityViolationException) ex).getMostSpecificCause().getMessage();
-            if(messageDev.contains(MESSAGE_ERROR_USER.CHAVE.value)) {
+            if (messageDev.contains(MESSAGE_ERROR_USER.CHAVE.value)) {
                 messageUser = RETORNO_MESSAGE_USER.CHAVE.value;
             } else {
-                messageUser="Ocorreu um erro no sistema!\nEntre em contato com o adminstrador.";
+                messageUser = "Ocorreu um erro no sistema!\nEntre em contato com o adminstrador.";
+                for (StackTraceElement ste : ex.getStackTrace()) {
+                    if (ste.getClassName().contains("com.gesfor.controller")) {
+                        origem = ste.getClassName();
+                        metodo = ste.getMethodName();
+                        logsService.salvar(new Logs(messageDev, new Date(), origem, metodo));
+                        break;
+                    }
+                }
             }
         }
-        
-        String origem="";
-        String metodo="";
-        
-        for (StackTraceElement ste : ex.getStackTrace()) {
-            if(ste.getClassName().contains("com.gesfor.controller")) {
-                origem = ste.getClassName();
-                metodo = ste.getMethodName();
-                break;
-            }
-        }
-        
-        logsService.salvar(new Logs(messageDev, new Date(), origem, metodo));
         return handleExceptionInternal(ex, new MessageErroDevUser(messageDev, messageUser), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
