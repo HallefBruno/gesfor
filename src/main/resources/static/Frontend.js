@@ -97,9 +97,6 @@ function getMessageErroAttribute() {
             let classe = "";
             $.each(messageAtribbuteError, function (key, value) {
                 classe = "." + key + "_feedback";
-                if(!$(classe).hasClass("is-invalid")) {
-                    $(classe).addClass("is-invalid");
-                }
                 $(classe).text(value);
             });
         }
