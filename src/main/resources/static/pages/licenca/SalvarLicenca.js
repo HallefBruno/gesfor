@@ -5,14 +5,21 @@ $(function () {
     validarComposDeEntrada();
     mask();
     
-    $('.js-example').select2({
-        theme: 'bootstrap4'
-    });
+//    $('.js-example').select2({
+//        theme: 'bootstrap4'
+//    });
+    
+    if ($("#email").val().filter(function () {//input[type=text]
+        return this.value.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/);
+    }));
     
     $("#btnSalvarLicenca").click(function () {
+        
+        
 
         let telefone = removerMaskara($("#telefone").val());
         let cnpj = removerMaskara($("#cnpj").val());
+        
         let licenca = {'cnpj': cnpj, 'dataCadastro': new Date(), 'email': $("#email").val(), 'status': true, 'telefone': telefone};
 
         $.ajax({
@@ -52,6 +59,15 @@ function mask() {
     };
 
     $('#telefone').mask(phoneMask, phoneOptions);
+}
+
+function checkSPassword(password) {
+    var pattern = /^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%&]).*$/;
+    if (!pattern.test(password)) {
+        $(".spassword_error").show();
+    } else {
+        $(".spassword_error").hide();
+    }
 }
 
 function latLong() {

@@ -16,6 +16,14 @@ function adicionarPaginaHTML() {
         $("#pages").find("div").empty();
         $("#pages").find("div").load("pages/licenca/Licenca.html");
     });
+    $("#linkCartaoAcesso").click(function () {
+        $("#pages").find("div").empty();
+        $("#pages").find("div").load("pages/acesso/Acesso.html");
+    });
+    $("#linkPortaria").click(function () {
+        $("#pages").find("div").empty();
+        $("#pages").find("div").load("pages/portaria/Portaria.html");
+    });
 }
 
 function gifLoading() {
@@ -78,7 +86,9 @@ function getMessageErroAttribute() {
         if (jsonErro.messageDev !== undefined && jsonErro.messageDev !== null) {
             console.warn(jsonErro);
             let messageUser = jqxhr.responseJSON.messageUser;
-            toastSimples(messageUser,"warning");
+            if(messageUser!== undefined && messageUser !== null) {
+                toastSimples(messageUser,"warning");
+            }
         }
         
         let messageAtribbuteError = jqxhr.responseJSON;
@@ -87,6 +97,9 @@ function getMessageErroAttribute() {
             let classe = "";
             $.each(messageAtribbuteError, function (key, value) {
                 classe = "." + key + "_feedback";
+                if(!$(classe).hasClass("is-invalid")) {
+                    $(classe).addClass("is-invalid");
+                }
                 $(classe).text(value);
             });
         }

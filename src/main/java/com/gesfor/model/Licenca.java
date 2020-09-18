@@ -1,6 +1,7 @@
 
 package com.gesfor.model;
 
+import com.gesfor.anotation.ValidPassword;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -44,7 +46,15 @@ public class Licenca implements Serializable {
     @NotBlank(message = "email obrigatorio!")
     @NotEmpty(message = "email obrigatorio!")
     @Column(nullable = false)
+    @Email
     private String email;
+    
+    @Column
+    @ValidPassword
+    @NotNull(message = "telefone obrigatorio!")
+    @NotBlank(message = "telefone obrigatorio!")
+    @NotEmpty(message = "telefone obrigatorio!")
+    private String senha;
     
     @NotNull(message = "telefone obrigatorio!")
     @NotBlank(message = "telefone obrigatorio!")

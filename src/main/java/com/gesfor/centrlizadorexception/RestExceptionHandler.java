@@ -29,6 +29,27 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     private LogsService logsService;
     
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<Object> exception(Exception ex, WebRequest request) {
+        String messageDev = ex.getMessage();
+        String msgUser = "Ocorreu um erro no sistema!\nEntre em contato com o adminstrador.";
+        String origem;
+        String metodo;
+        for (StackTraceElement ste : ex.getStackTrace()) {
+            
+            System.out.println(ste.getClassName());
+            
+            if (ste.getClassName().contains("com.gesfor.controller")) {
+                origem = ste.getClassName();
+                metodo = ste.getMethodName();
+                logsService.salvar(new Logs(messageDev, new Date(), origem, metodo));
+                break;
+            }
+        }
+        
+        return handleExceptionInternal(ex, new MessageErroDevUser(messageDev,msgUser), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+    
     @ExceptionHandler({LicencaNotFoundException.class})
     protected ResponseEntity<Object> handleNotFound(Exception ex, WebRequest request) {
         return handleExceptionInternal(ex, "Licenca não encontrada", new HttpHeaders(), HttpStatus.NOT_FOUND, request);
