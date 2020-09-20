@@ -5,7 +5,7 @@
     display : block;
     position : fixed;
     z-index: 100;
-    background-image : url('/gesfor/imagens/Ellipsis.gif');
+    background-image : url('/gesfor/template/img/Ellipsis.gif');
     background-color:#ffffff;
     opacity : 0.8;
     background-repeat : no-repeat;
