@@ -61,7 +61,7 @@ public class Licenca implements Serializable {
     @NotNull(message = "telefone obrigatorio!")
     @NotBlank(message = "telefone obrigatorio!")
     @NotEmpty(message = "telefone obrigatorio!")
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 11)
     private String telefone;
     
     @NotNull(message = "Quantidade é obrigatória!")
