@@ -29,27 +29,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     private LogsService logsService;
     
-    @ExceptionHandler({Exception.class})
-    public ResponseEntity<Object> exception(Exception ex, WebRequest request) {
-        String messageDev = ex.getMessage();
-        String msgUser = "Ocorreu um erro no sistema!\nEntre em contato com o adminstrador.";
-        String origem;
-        String metodo;
-        for (StackTraceElement ste : ex.getStackTrace()) {
-            
-            System.out.println(ste.getClassName());
-            
-            if (ste.getClassName().contains("com.gesfor.controller")) {
-                origem = ste.getClassName();
-                metodo = ste.getMethodName();
-                logsService.salvar(new Logs(messageDev, new Date(), origem, metodo));
-                break;
-            }
-        }
-        
-        return handleExceptionInternal(ex, new MessageErroDevUser(messageDev,msgUser), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-    }
-    
     @ExceptionHandler({LicencaNotFoundException.class})
     protected ResponseEntity<Object> handleNotFound(Exception ex, WebRequest request) {
         return handleExceptionInternal(ex, "Licenca não encontrada", new HttpHeaders(), HttpStatus.NOT_FOUND, request);
@@ -71,8 +50,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         
         if (ex instanceof DataIntegrityViolationException) {
             messageDev = ((DataIntegrityViolationException) ex).getMostSpecificCause().getMessage();
-            if (messageDev.contains(MESSAGE_ERROR_USER.CHAVE.value)) {
-                messageUser = RETORNO_MESSAGE_USER.CHAVE.value;
+            if (messageDev.contains(msgErroBR) || messageDev.contains(msgErroEN)) {
+                messageUser = "Já existe um registro com esse CNPJ!";
             } else {
                 messageUser = "Ocorreu um erro no sistema!\nEntre em contato com o adminstrador.";
                 for (StackTraceElement ste : ex.getStackTrace()) {
@@ -126,23 +105,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         }
     }
     
-    public enum MESSAGE_ERROR_USER {
-        
-        CHAVE("duplicar valor da chave viola a restrição de unicidade");
-        
-        private String value;
-        private MESSAGE_ERROR_USER(String value) {
-            this.value = value;
-        }
-    }
-    
-    public enum RETORNO_MESSAGE_USER {
-        
-        CHAVE("Esse registro já exite!");
-        
-        private String value;
-        private RETORNO_MESSAGE_USER(String value) {
-            this.value = value;
-        }
-    }
+    private final String msgErroBR = "duplicar valor da chave viola a restrição de unicidade";
+    private final String msgErroEN = "duplicate key value violates unique constraint";
+
 }

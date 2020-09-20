@@ -1,37 +1,46 @@
 <!DOCTYPE html>
 <div class="container">
-
-    <div class="form-group">
-        <label for="cnpj">CNPJ</label>
-        <input type="text" class="form-control validar" id="cnpj" name="cnpj" maxlength="18" required>
-        <!--<div class="valid-feedback">Success! You've done it.</div>-->
-        <div class="invalid-feedback cnpj_feedback"></div>
-    </div>
-
-    <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" class="form-control validar" id="email" required>
-        <div class="invalid-feedback email_feedback"></div>
-    </div>
-
-    <div class="form-group">
-        <label for="telefone">Telefone</label>
-        <input type="tel" class="form-control validar" id="telefone" required>
-        <div class="invalid-feedback telefone_feedback"></div>
-    </div>
     
-    <div class="form-group">
-        <label for="senha">Senha</label>
-        <input type="password" class="form-control validar" id="senha" required>
-        <div class="invalid-feedback senha_feedback"></div>
-    </div>
+    <form>
+        
+        <div class="form-group">
+            <label for="cnpj">CNPJ</label>
+            <input type="text" class="form-control validar" id="cnpj" name="cnpj" maxlength="18" pattern="(\d{3}\.?\d{3}\.?\d{3}-?\d{2})|(\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2})" required>
+            <!--<div class="valid-feedback">Success! You've done it.</div>-->
+            <div class="invalid-feedback cnpj_feedback"></div>
+        </div>
 
-    <div id="divLoading"></div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control validar" id="email" required>
+            <div class="invalid-feedback email_feedback"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="telefone">Telefone</label>
+            <input type="tel" class="form-control validar" id="telefone" required>
+            <div class="invalid-feedback telefone_feedback"></div>
+        </div>
+        
+        <div class="form-group">
+            <label for="qtdusuarios">Quantidade de usuários</label>
+            <input type="number" class="form-control validar" id="qtdUsuarios" min="1" required>
+            <div class="invalid-feedback qtdUsuarios_feedback"></div>
+        </div>
+        
+        <div class="form-group">
+            <label for="senha">Senha</label>
+            <input type="password" class="form-control validar" id="senha" minlength="8" maxlength="9" pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}" required>
+            <div class="invalid-feedback senha_feedback"></div>
+        </div>
+
+        <div id="divLoading"></div>
+
+        <br/>
+        <button id="btnSalvarLicenca" class="btn btn-light btn_" > Salvar </button>
+
+    </form>
     
-    <br/>
-    <button id="btnSalvarLicenca" class="btn btn-light btn_" > Salvar </button>
-
-    <div><strong id="msgError"></strong></div>
 </div>
 
 <script src="pages/licenca/SalvarLicenca.js" type="text/javascript"></script>

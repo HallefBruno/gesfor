@@ -1,26 +1,29 @@
 /* global Swal */
 
 $(function () {
-    
+
     validarComposDeEntrada();
-    mask();
-    
+    maskCnpjCpfPhone();
+
 //    $('.js-example').select2({
 //        theme: 'bootstrap4'
 //    });
-    
-    if ($("#email").val().filter(function () {//input[type=text]
-        return this.value.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/);
-    }));
-    
+
+
     $("#btnSalvarLicenca").click(function () {
-        
-        
 
         let telefone = removerMaskara($("#telefone").val());
         let cnpj = removerMaskara($("#cnpj").val());
-        
-        let licenca = {'cnpj': cnpj, 'dataCadastro': new Date(), 'email': $("#email").val(), 'status': true, 'telefone': telefone};
+
+        let licenca = {
+            'cnpj': cnpj, 
+            'dataCadastro': new Date(), 
+            'email': $("#email").val(), 
+            'status': true, 
+            'senha':$("#senha").val(),
+            'telefone': telefone,
+            'qtdUsuarios':$("#qtdUsuarios").val()
+        };
 
         $.ajax({
 
@@ -31,11 +34,7 @@ $(function () {
             dataType: "json",
 
             success: function (data, textStatus, jqXHR) {
-                toastSimples('Registro salvo com sucesso!','success');
-            },
-
-            error: function (xhr, status, error) {
-                
+                toastSimples('Registro salvo com sucesso!', 'success');
             }
 
         });
@@ -44,31 +43,6 @@ $(function () {
 
 
 });
-
-function mask() {
-    
-    $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
-    
-    var phoneMask = function (val) {
-        return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
-    },
-    phoneOptions = {
-        onKeyPress: function(val, e, field, options) {
-            field.mask(phoneMask.apply({}, arguments), options);
-        }
-    };
-
-    $('#telefone').mask(phoneMask, phoneOptions);
-}
-
-function checkSPassword(password) {
-    var pattern = /^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%&]).*$/;
-    if (!pattern.test(password)) {
-        $(".spassword_error").show();
-    } else {
-        $(".spassword_error").hide();
-    }
-}
 
 function latLong() {
 
