@@ -1,4 +1,4 @@
-/* global Swal */
+/* global Swal, LicencaHttp, licenca */
 
 $(function () {
     adicionarPaginaHTML();
@@ -83,7 +83,7 @@ function getMessageErroAttribute() {
 
         let jsonErro = jqxhr.responseJSON;
         
-        if (jsonErro.messageDev !== undefined && jsonErro.messageDev !== null) {
+        if (jsonErro.messageDev !== 'undefined' && jsonErro.messageDev !== null) {
             console.warn(jsonErro);
             let messageUser = jqxhr.responseJSON.messageUser;
             if(messageUser!== undefined && messageUser !== null) {
@@ -120,13 +120,6 @@ function toastSimples(message,icon) {
         icon: `${icon}`,
         title: `${message}`
     });
-}
-
-function checkSPassword(password) {
-    var pattern = /^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%&]).*$/;
-    if (!pattern.test(password)) {
-        $(".senha_feedback").text("Senha inválida");
-    }
 }
 
 function removerMaskara(campo) {

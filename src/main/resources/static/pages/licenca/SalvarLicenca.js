@@ -1,46 +1,31 @@
-/* global Swal */
-
 $(function () {
-
+    
+    var dataF = new DataForm.ValidaForm();
+    dataF.init("form_licenca");
+    
     validarComposDeEntrada();
     maskCnpjCpfPhone();
 
-//    $('.js-example').select2({
-//        theme: 'bootstrap4'
-//    });
-
-
     $("#btnSalvarLicenca").click(function () {
 
-        let telefone = removerMaskara($("#telefone").val());
-        let cnpj = removerMaskara($("#cnpj").val());
+        //console.log($("form").serializeArray());
+        
 
         let licenca = {
-            'cnpj': cnpj, 
-            'dataCadastro': new Date(), 
-            'email': $("#email").val(), 
-            'status': true, 
-            'senha':$("#senha").val(),
-            'telefone': telefone,
-            'qtdUsuarios':$("#qtdUsuarios").val()
+            'cnpj': removerMaskara($("#cnpj").val()),
+            'dataCadastro': new Date(),
+            'email': $("#email").val(),
+            'status': true,
+            'senha': $("#senha").val(),
+            'telefone': removerMaskara($("#telefone").val()),
+            'qtdUsuarios': $("#qtdUsuarios").val()
         };
 
-        $.ajax({
-
-            method: "POST",
-            url: "licencas/salvar",
-            data: JSON.stringify(licenca),
-            contentType: "application/json",
-            dataType: "json",
-
-            success: function (data, textStatus, jqXHR) {
-                toastSimples('Registro salvo com sucesso!', 'success');
-            }
-
-        });
+        var http = new LicencaService.SalvarLicenca();
+        http.init(licenca);
+        console.log(http);
 
     });
-
 
 });
 
@@ -67,3 +52,7 @@ function success(pos) {
 function error(err) {
     console.warn('ERROR(' + err.code + '): ' + err.message);
 }
+
+//    $('.js-example').select2({
+//        theme: 'bootstrap4'
+//    });
