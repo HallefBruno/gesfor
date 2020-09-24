@@ -1,7 +1,6 @@
 
 package com.gesfor.model;
 
-import com.gesfor.anotation.ValidPassword;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;

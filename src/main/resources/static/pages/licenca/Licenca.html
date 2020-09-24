@@ -5,17 +5,21 @@
         
         <div class="form-group">
             <label for="cnpj">CNPJ</label>
-            <input type="text" class="form-control validar" id="cnpj" maxlength="18" pattern="(\d{3}\.?\d{3}\.?\d{3}-?\d{2})|(\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2})" required>
+            <input type="text" class="form-control validar" id="cnpj" name="cnpj" maxlength="18" pattern="(\d{3}\.?\d{3}\.?\d{3}-?\d{2})|(\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2})" required>
             <!--<div class="valid-feedback">Success! You've done it.</div>-->
             <div class="invalid-feedback cnpj_feedback"></div>
         </div>
-
+        
+        <input type="hidden" class="form-control" id="dataCadastro" name="dataCadastro">
+        
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" class="form-control validar" id="email"  required>
+            <input type="email" class="form-control validar" id="email" name="email" required>
             <div class="invalid-feedback email_feedback"></div>
         </div>
-
+        
+        <input type="hidden" class="form-control" id="status" name="status">
+        
         <div class="form-group">
             <label for="telefone">Telefone</label>
             <input type="tel" class="form-control validar" id="telefone" name="telefone" required>
@@ -47,4 +51,4 @@
 <script src="pages/service/HttpRequest.js" type="text/javascript"></script>
 <script src="pages/service/LicencaService.js" type="text/javascript"></script>
 <script src="pages/licenca/SalvarLicenca.js" type="text/javascript"></script>
-<script src="pages/util/Util.js" type="text/javascript"></script>
+<script src="pages/util/FormUtil.js" type="text/javascript"></script>
