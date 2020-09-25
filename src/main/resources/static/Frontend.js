@@ -5,22 +5,39 @@ $(function () {
 });
 
 function adicionarPaginaHTML() {
+    cadastros();
+}
 
-    $("#linkBairro").click(function () {
-        $("#pages").find("div").empty();
-        $("#pages").find("div").load("pages/bairro/Bairro.html");
+const LINK_PAGE_CADASTRO = {
+
+    CADASTRO_LICENCA: "pages/licenca/Licenca.html",
+    CADASTRO_BAIRRO: "pages/bairro/Bairro.html",
+    CADASTRO_ACESSO: "pages/acesso/Acesso.html",
+    CADASTRO_PORTARIA: "pages/portaria/Portaria.html"
+
+};
+
+function cadastros() {
+    let stringHtmlLink = "";
+    let linkTagert="";
+    let paginas = new Array();
+    paginas.push({id: 1, name: 'Cadastro Licença', pagina: LINK_PAGE_CADASTRO.CADASTRO_LICENCA, idLink: 'linkLicenca'});
+    paginas.push({id: 2, name: 'Cadastro Portaria', pagina: LINK_PAGE_CADASTRO.CADASTRO_PORTARIA, idLink: 'linkPortaria'});
+    paginas.push({id: 3, name: 'Cadastro Acesso', pagina: LINK_PAGE_CADASTRO.CADASTRO_ACESSO, idLink: 'linkAcesso'});
+
+    $.each(paginas, function (i) {
+        
+        stringHtmlLink+="<a class='collapse-item " + paginas[i].idLink + "' href='#'> " + paginas[i].name + " </a>"; //<div class='collapse-divider'></div>
+
+        $("#linkPaginas").on("click", "a." + paginas[i].idLink, function (target) {
+            if ($("#pages").find("div").length <= 1 || linkTagert !== target.handleObj.selector) {
+                $("#pages").find("div").empty();
+                $("#pages").find("div").load(paginas[i].pagina);
+                linkTagert = target.handleObj.selector;
+            }
+        });
     });
-    $("#linkLicenca").click(function () {
-        $("#pages").find("div").empty();
-        $("#pages").find("div").load("pages/licenca/Licenca.html");
-    });
-    $("#linkCartaoAcesso").click(function () {
-        $("#pages").find("div").empty();
-        $("#pages").find("div").load("pages/acesso/Acesso.html");
-    });
-    $("#linkPortaria").click(function () {
-        $("#pages").find("div").empty();
-        $("#pages").find("div").load("pages/portaria/Portaria.html");
-    });
-    
+
+    $("#linkPaginas").html(stringHtmlLink);
+
 }
