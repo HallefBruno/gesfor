@@ -18,6 +18,7 @@ HttpRequest.Request = (function () {
 
 HttpRequest.LocalStorage = (function () {
     
+    
     Storage.prototype.setObject = function (key, value) {
         this.setItem(key, JSON.stringify(value));
     };
@@ -26,6 +27,8 @@ HttpRequest.LocalStorage = (function () {
         var value = this.getItem(key);
         return value && JSON.parse(value);
     };
+    
+    return Storage;
     
 }());
 
