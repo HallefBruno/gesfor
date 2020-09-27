@@ -1,11 +1,10 @@
 package com.gesfor.centrlizadorexception;
 
-import com.gesfor.centrlizadorexception.negocioexception.licenca.LicencaNotFoundException;
-import com.gesfor.model.Logs;
 import com.gesfor.service.LogsService;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -30,44 +29,27 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     private LogsService logsService;
     
-    @ExceptionHandler({LicencaNotFoundException.class})
-    protected ResponseEntity<Object> handleNotFound(Exception ex, WebRequest request) {
-        return handleExceptionInternal(ex, "Licenca não encontrada", new HttpHeaders(), HttpStatus.NOT_FOUND, request);
-    }
-
-    @ExceptionHandler({ConstraintViolationException.class})
-    public ResponseEntity<Object> handleConstraintBadRequest(Exception ex, WebRequest request) {
-        String msgDev = ex.getMessage();
-        String msgUser = "Já exite esse registro";
-        return handleExceptionInternal(ex, new MessageErroDevUser(msgDev,msgUser), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<Object> handle(Exception ex, HttpServletRequest request, HttpServletResponse response, WebRequest webRequest) {
+        String msgDev;
+        String msgUser;
+        if (ex instanceof NullPointerException) {
+            return new ResponseEntity<>(new MessageErroDevUser(ex.getLocalizedMessage(), "Ocorreu um erro no sistema!\nEntre em contato com o adminstrador."),HttpStatus.BAD_REQUEST);
+        } else if(ex instanceof ConstraintViolationException) {
+            msgDev = ex.getMessage();
+            msgUser = "Já exite esse registro";
+            return handleExceptionInternal(ex, new MessageErroDevUser(msgDev,msgUser), new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+        } else if(ex instanceof DataIntegrityViolationException) {
+            msgDev = ((DataIntegrityViolationException) ex).getMostSpecificCause().getMessage();
+            msgUser = "Esse registro já existe";
+            if(msgDev.contains("duplicate key")) {
+                return handleExceptionInternal(ex, new MessageErroDevUser(msgDev, msgUser), new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+            }
+            return handleExceptionInternal(ex, new MessageErroDevUser(ex.getLocalizedMessage(), ex.getLocalizedMessage()), new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+        }
+        return new ResponseEntity<>(new MessageErroDevUser(ex.getLocalizedMessage(), "Ocorreu um erro no sistema!\nEntre em contato com o adminstrador."),HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
-    @ExceptionHandler({DataIntegrityViolationException.class})
-    public ResponseEntity<Object> handleDataIntegrityBadRequest(Exception ex, WebRequest request) {
-        String messageUser="";
-        String messageDev="";
-        String origem;
-        String metodo;
-        
-        if (ex instanceof DataIntegrityViolationException) {
-            messageDev = ((DataIntegrityViolationException) ex).getMostSpecificCause().getMessage();
-            if (messageDev.contains(msgErroBR) || messageDev.contains(msgErroEN)) {
-                messageUser = "Já existe um registro com esse CNPJ!";
-            } else {
-                messageUser = "Ocorreu um erro no sistema!\nEntre em contato com o adminstrador.";
-                for (StackTraceElement ste : ex.getStackTrace()) {
-                    if (ste.getClassName().contains("com.gesfor.controller")) {
-                        origem = ste.getClassName();
-                        metodo = ste.getMethodName();
-                        logsService.salvar(new Logs(messageDev, new Date(), origem, metodo));
-                        break;
-                    }
-                }
-            }
-        }
-        return handleExceptionInternal(ex, new MessageErroDevUser(messageDev, messageUser), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-    }
-
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         return handleExceptionInternal(ex, new MessageErroDevUser(ex.getLocalizedMessage(), "JSON parse error"), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
@@ -110,8 +92,4 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             this.messageUser = messageUser;
         }
     }
-    
-    private final String msgErroBR = "duplicar valor da chave viola a restrição de unicidade";
-    private final String msgErroEN = "duplicate key value violates unique constraint";
-
 }

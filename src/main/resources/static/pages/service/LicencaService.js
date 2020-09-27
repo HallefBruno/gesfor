@@ -1,3 +1,5 @@
+/* global HttpRequest */
+
 var LicencaService = LicencaService || {};
 
 LicencaService.SalvarLicenca = (function() {
@@ -5,11 +7,13 @@ LicencaService.SalvarLicenca = (function() {
     function SalvarLicenca() {
         this.response;
     }
+    
     SalvarLicenca.prototype.init = function (object) {
-        var ajaxpost = new HttpRequest.Request();
-        ajaxpost.post(object,"licencas/salvar");
-        this.response = ajaxpost.reponse;
+        var request = new HttpRequest.Request();
+        request.post(object,"licencas/salvar");
+        this.response = request;
     };
+    
     return SalvarLicenca;
 
 }());

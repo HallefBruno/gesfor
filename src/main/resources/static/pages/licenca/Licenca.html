@@ -5,8 +5,7 @@
         
         <div class="form-group">
             <label for="cnpj">CNPJ</label>
-            <input type="text" class="form-control validar" id="cnpj" name="cnpj" maxlength="18" pattern="(\d{3}\.?\d{3}\.?\d{3}-?\d{2})|(\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2})" required>
-            <!--<div class="valid-feedback">Success! You've done it.</div>-->
+            <input type="text" class="form-control validar" id="cnpj" name="cnpj" maxlength="18" required>
             <div class="invalid-feedback cnpj_feedback"></div>
         </div>
         
@@ -34,7 +33,7 @@
         
         <div class="form-group">
             <label for="senha">Senha</label>
-            <input type="password" class="form-control validar" name="senha" id="senha" minlength="8" maxlength="9" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required>
+            <input type="password" class="form-control validar" name="senha" id="senha" minlength="8" maxlength="8" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required>
             <div class="invalid-feedback senha_feedback"></div>
         </div>
 

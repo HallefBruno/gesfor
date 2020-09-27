@@ -1,3 +1,5 @@
+/* global Swal */
+
 var FormUtil = FormUtil || {};
 
 FormUtil.ValidaForm = (function () {

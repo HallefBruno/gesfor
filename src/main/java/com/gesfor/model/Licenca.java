@@ -53,7 +53,7 @@ public class Licenca implements Serializable {
     @NotNull(message = "senha obrigatoria!")
     @NotBlank(message = "senha obrigatoria!")
     @NotEmpty(message = "senha obrigatoria!")
-    @Pattern(message="Senha inválida", regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}") //^.*(?=.{8,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%&]).*$
+    @Pattern(message="Senha inválida", regexp = "(?=^.{8,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$") //(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}
     @Column
     private String senha;
     

@@ -1,3 +1,5 @@
+/* global FormUtil, LicencaService */
+
 $(document).ready(function() {
     
     let dataF = new FormUtil.ValidaForm();
@@ -19,8 +21,7 @@ $(document).ready(function() {
 
         var http = new LicencaService.SalvarLicenca();
         http.init(data);
-        console.log(http);
-
+        console.log(http.response.getObject("object"));
     });
     
 });

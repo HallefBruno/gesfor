@@ -32,7 +32,10 @@ function cadastros() {
         $("#linkPaginas").on("click", "a." + paginas[i].idLink, function (target) {
             if ($("#pages").find("div").length <= 1 || linkTagert !== target.handleObj.selector) {
                 $("#pages").find("div").empty();
-                $("#pages").find("div").load(paginas[i].pagina);
+                console.log("Iniciando");
+                $("#pages").find("div").load(paginas[i].pagina, function () {
+                    console.log("Completo");
+                });
                 linkTagert = target.handleObj.selector;
             }
         });
