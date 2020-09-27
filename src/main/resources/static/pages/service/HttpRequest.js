@@ -8,7 +8,8 @@ HttpRequest.Request = (function () {
 
     Request.prototype.post = function (object, url) {
         let ajax = $.ajax({method: "POST", url: url, data: JSON.stringify(object), contentType: "application/json", dataType: "json"});
-        new LocalStorage.setObject("status", ajax.status);
+        let local = new HttpRequest.LocalStorage();
+        local.setObject("status", ajax.status);
     };
     
     return Request;
