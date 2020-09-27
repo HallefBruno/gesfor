@@ -1,28 +1,31 @@
-/* global licenca, ContentType, DataType, Storage */
+/* global licenca, ContentType, DataType, Storage, LocalStorage */
 
 var HttpRequest = HttpRequest || {};
 
 HttpRequest.Request = (function () {
 
-    function Request() {
-        this.responseAjax;
-    }
+    function Request() {}
 
     Request.prototype.post = function (object, url) {
-        this.responseAjax = $.ajax({method: "POST", url: url, data: JSON.stringify(object), contentType: "application/json", dataType: "json"});
-        setObject("status", this.responseAjax.status);
-        setObject("object", this.responseAjax.responseJSON);
+        let ajax = $.ajax({method: "POST", url: url, data: JSON.stringify(object), contentType: "application/json", dataType: "json"});
+        new LocalStorage.setObject("status", ajax.status);
     };
     
     return Request;
 
 }());
 
-Storage.prototype.setObject = function (key, value) {
-    this.setItem(key, JSON.stringify(value));
-};
+HttpRequest.LocalStorage = (function () {
+    
+    Storage.prototype.setObject = function (key, value) {
+        this.setItem(key, JSON.stringify(value));
+    };
+    
+    Storage.prototype.getObject = function (key) {
+        var value = this.getItem(key);
+        return value && JSON.parse(value);
+    };
+    
+}());
 
-Storage.prototype.getObject = function (key) {
-    var value = this.getItem(key);
-    return value && JSON.parse(value);
-};
+
